@@ -3,92 +3,78 @@ Treehouse FSJS Techdegree:
 project 1 - A Random Quote Generator
 ******************************************/
 
-// Study guide for this project - https://drive.google.com/file/d/1s5grutGuQFwJcQP8bFwEI69Q8FCkGdDk/view?usp=sharing
-
-
-/***
-  Create the array of quote objects and name it `quotes`.
-  Add at least five quote objects to the `quotes` array.
-  Give each quote object a `quote` and `source` property.
-  Add the `citation` property to at least one object in the array.
-  Add the `year` property to at least one object in the array.
-  Use console.log() to log your array of quotes to the console.
-***/
-const quote = [
+// ----- Variable Assignments ----- //
+let counter = 1;
+const quotes = [
   {
-    quote: 'The true sign of intelligence is not knowledge but imagination.',
-    source: 'Alber Einstien',
-    citation: '',
+    quote: 'My favorite things in life don\'t cost any money. It\'s really clear that the most precious resource we all have is time',
+    source: 'Steve Jobs',
+    citation: 'Publication',
     year: '',
-    tag: ''
+    tags: ['Inspring', 'Life'],
+    index: '0'
   },
   {
-    quote: 'The time will come when it will disgust you to look in the mirror.',
-    source: 'Alber Einstien',
-    citation: '',
-    year: ''
+    quote: 'Just because someone stumbles and loses their path, doesn’t mean they’re lost forever.',
+    source: 'Professor X',
+    citation: 'Movie',
+    year: '2014',
+    tags: ['Inspiring', 'Life', 'Movie'],
+    index: '1'
   },
   {
-    quote: 'Only two things are infinite, the universe and human stupidity, and I\'m not sure about the former.',
-    source: 'Alber Einstien',
-    citation: '',
-    year: ''
+    quote: 'I\'ve learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel.',
+    source: 'Maya Angelou',
+    citation: 'Publication',
+    year: '',
+    tags: ['Inpsiring', 'Life'],
+    index: '2'
   },
   {
-    quote: 'The true sign of intelligence is not knowledge but imagination.',
-    source: 'Alber Einstien',
-    citation: '',
-    year: ''
+    quote: 'Sometimes it is the people who no one imagines anything of who do the things that no one can imagine.',
+    source: 'Alan Turing',
+    citation: 'Movie',
+    year: '2014',
+    tags: ['Inpsiring', 'Movie'],
+    index: '3'
   },
   {
-    quote: 'The true sign of intelligence is not knowledge but imagination.',
-    source: 'Alber Einstien',
-    citation: '',
-    year: ''
+    quote: 'Life is like riding a bicycle. To keep your balance, you must keep moving.',
+    source: 'Albert Einstien',
+    citation: 'Publication',
+    year: '',
+    tags: ['Balance', 'Inpsiring', 'Life'],
+    index: '4'
   },
 ];
 
-/***
-  Create the `getRandomQuote` function to:
-   - Create a variable to store a random number
-   - Cse the random number to `return` a random quote object from the `quotes` array.
-***/
+// ---- Functions ---- //
+// Generate random numbers and check if that number is the same the data-index of the quote
 function getRandomQuote() {
-  const randNum = Math.floor(Math.random() * 6);
-  return quote[randNum];
+  let randNum = Math.floor(Math.random() * 6);
+  const dataIndex = parseInt(document.getElementById('quote-box').getAttribute('data-index'));
+
+  if (randNum === 0 && dataIndex === 0) {
+    return quotes[randNum + 1];
+  } else if (randNum === 5 && dataIndex === 5) {
+    return quotes[randNum - 1];
+  } else if (randNum === dataIndex) {
+    return quotes[randNum + 1];
+  }
+  return quotes[randNum];
 }
 
-
-/***
-  Create the `printQuote` function to:
-   - Call the `getRandomQuote` function and assign it to a variable.
-   - Create a variable for the HTML string and set it equal to an empty string.
-   - Use the HTML template in the instructions or the markup in the index.html file, AND
-     the random quote vairable to build your HTML string.
-   - Add the quote and source section to the HTML string.
-   - Use an if statement to check for the citation property before adding it to the HTML string.
-   - Use an if statement to check for the year property before adding it to the HTML string.
-   - Don't forget to close that final `p` tag.
-   - Set the `innerHTML` of the `quote-box` div to the HTML string.
-***/
-
-function createSpan(element, _class, text) {
-  let span = document.createElement(element);
-  span.textContent = text;
-  span.className = _class;
-  document.querySelector('.source').appendChild(span);
-}
-
-
+// Print new quote
 function printQuote() {
   const randomQuote = getRandomQuote();
   const newColor = randomColor();
+  const index = randomQuote.index;
   const newQuote = `
       <p class="quote">${randomQuote.quote}</p>
       <p class="source">${randomQuote.source}</p>
     `;
   document.getElementById('quote-box').innerHTML = newQuote;
-  
+
   if (randomQuote.citation !== '') {
     createSpan('span', 'citation', randomQuote.citation);
   }
@@ -96,11 +82,45 @@ function printQuote() {
   if (randomQuote.year !== '') {
     createSpan('span', 'year', randomQuote.year)
   }
+
+  let ul = document.createElement('ul');
+  for (let i=0; i<randomQuote.tags.length; i++) {
+    const li = document.createElement('li');
+    li.textContent = randomQuote.tags[i];
+    ul.appendChild(li);
+  }
+  ul.className = 'tags';
+  document.getElementById('quote-box').appendChild(ul);
+  document.getElementById('quote-box').setAttribute('data-index', index);
   document.getElementById('loadQuote').setAttribute('onmouseover', 'addHoverColor(this)');
   document.getElementById('loadQuote').setAttribute('onmouseleave', 'removeHoverColor(this)');
 }
 
+// Create span elements for citations and years
+function createSpan(element, _class, text) {
+  let span = document.createElement(element);
+  span.textContent = text;
+  span.className = _class;
+  document.querySelector('.source').appendChild(span);
+}
 
+// Create an object of the starter quote and push it to quotes array
+function pushQuoteObject() {
+  let quoteObject = {};
+  const tags = document.querySelector('.tags');
+  quoteObject.quote = document.querySelector('.quote').textContent;
+  quoteObject.source = document.querySelector('.source').textContent.slice(0,16);
+  quoteObject.citation = document.querySelector('.source').textContent.slice(16,23)
+  quoteObject.year = document.querySelector('.source').textContent.slice(23,28)
+  quoteObject.tags = [];
+  for (let item of tags.children) {
+    quoteObject.tags.push(item.textContent);
+  }
+  quoteObject.index = '5';
+  quotes.push(quoteObject);
+}
+
+// Generate random background color and button background color
 function randomColor() {
   const randColor1 = String(Math.floor(Math.random() * 255)) + ', ';
   const randColor2 = String(Math.floor(Math.random() * 255)) + ', ';
@@ -109,40 +129,23 @@ function randomColor() {
   document.getElementById('loadQuote').style.backgroundColor = 'rgba(' + randColor1 + randColor2 + randColor3 + '1)';
 }
 
-
+// Remove hover color from button
 function removeHoverColor(element) {
   const defaultButtonColor = document.body.style.backgroundColor;
   element.style.backgroundColor = defaultButtonColor;
 }
 
-
+// Add hover color to button
 function addHoverColor(element) {
   element.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
 }
-
-
+// AFter the page finished loading, calls printQuote function every 21 seconds and set data-index of the current quote's HTML to 5
 window.onload = () => {
-  let quoteObject = {};
-  setInterval(() => {
-    printQuote();
-  }, 20000);
-  quoteObject.quote = document.querySelector('.quote').textContent;
-  quoteObject.source = document.querySelector('.source').textContent.slice(0,16);
-  quoteObject.citation = document.querySelector('.source').textContent.slice(16,23)
-  quoteObject.year = document.querySelector('.source').textContent.slice(23,28)
-  quote.push(quoteObject);
+  setInterval(printQuote, 21000);
+  pushQuoteObject();
+  document.getElementById('quote-box').setAttribute('data-index', '5');
 };
 
-/***
-  When the "Show another quote" button is clicked, the event listener
-  below will be triggered, and it will call, or "invoke", the `printQuote`
-  function. So do not make any changes to the line of code below this
-  comment.
-***/
-
-document.getElementById('loadQuote').addEventListener("click", () => {
-  printQuote();
-}, false);
-
-
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
+// ----- Event Listeners ----- //
+// calls printQuote function when the button is clicked
+document.getElementById('loadQuote').addEventListener("click", printQuote, false);

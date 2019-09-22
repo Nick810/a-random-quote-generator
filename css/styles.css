@@ -1,4 +1,4 @@
-/** 
+/**
  * Treehouse FSJS Techdegree
  * Random Quote Generator - CSS
  */
@@ -71,6 +71,28 @@ body {
   font-style: normal;
 }
 
+.tags {
+  display: flex;
+  justify-content: flex-end;
+  list-style-type: none;
+  margin-top: 2em;
+  margin-right: 4.25em;
+}
+
+.tags li {
+  font-size: 0.75em;
+  margin: 0 1em;
+  padding: 0.75em 1.5em;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: .5s;
+}
+
+.tags li:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
 #loadQuote {
   position: fixed;
   width: 12em;
@@ -83,7 +105,7 @@ body {
   color: #fff;
   background-color: #36b55c;
   padding: 15px 0;
-  transition: .5s ;
+  transition: .5s;
 }
 #loadQuote:hover {
   background-color: rgba(255,255,255,.25);
