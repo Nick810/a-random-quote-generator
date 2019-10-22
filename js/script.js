@@ -5,6 +5,8 @@ project 1 - A Random Quote Generator
 
 // ----- Variable Assignments ----- //
 let counter = 1;
+let timer = setInterval(printQuote, 21000);
+let previousRandomNum;
 const quotes = [
   {
     quote: 'My favorite things in life don\'t cost any money. It\'s really clear that the most precious resource we all have is time',
@@ -12,7 +14,6 @@ const quotes = [
     citation: 'Publication',
     year: '',
     tags: ['Inspring', 'Life'],
-    index: '0'
   },
   {
     quote: 'Just because someone stumbles and loses their path, doesn’t mean they’re lost forever.',
@@ -20,7 +21,6 @@ const quotes = [
     citation: 'Movie',
     year: '2014',
     tags: ['Inspiring', 'Life', 'Movie'],
-    index: '1'
   },
   {
     quote: 'I\'ve learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel.',
@@ -28,7 +28,6 @@ const quotes = [
     citation: 'Publication',
     year: '',
     tags: ['Inpsiring', 'Life'],
-    index: '2'
   },
   {
     quote: 'Sometimes it is the people who no one imagines anything of who do the things that no one can imagine.',
@@ -36,7 +35,6 @@ const quotes = [
     citation: 'Movie',
     year: '2014',
     tags: ['Inpsiring', 'Movie'],
-    index: '3'
   },
   {
     quote: 'Life is like riding a bicycle. To keep your balance, you must keep moving.',
@@ -44,31 +42,26 @@ const quotes = [
     citation: 'Publication',
     year: '',
     tags: ['Balance', 'Inpsiring', 'Life'],
-    index: '4'
   },
 ];
 
 // ---- Functions ---- //
 // Generate random numbers and check if that number is the same the data-index of the quote
-function getRandomQuote() {
-  let randNum = Math.floor(Math.random() * 6);
-  const dataIndex = parseInt(document.getElementById('quote-box').getAttribute('data-index'));
+function getRandomQuote(arr) {
+  const randNum = Math.floor(Math.random() * quotes.length);
 
-  if (randNum === 0 && dataIndex === 0) {
-    return quotes[randNum + 1];
-  } else if (randNum === 5 && dataIndex === 5) {
-    return quotes[randNum - 1];
-  } else if (randNum === dataIndex) {
-    return quotes[randNum + 1];
+  if (previousRandomNum !== randNum) {
+    previousRandomNum = randNum
+    return arr[previousRandomNum];
+  } else {
+    return getRandomQuote(arr);
   }
-  return quotes[randNum];
 }
 
 // Print new quote
 function printQuote() {
-  const randomQuote = getRandomQuote();
+  const randomQuote = getRandomQuote(quotes);
   const newColor = randomColor();
-  const index = randomQuote.index;
   const newQuote = `
       <p class="quote">${randomQuote.quote}</p>
       <p class="source">${randomQuote.source}</p>
@@ -91,9 +84,11 @@ function printQuote() {
   }
   ul.className = 'tags';
   document.getElementById('quote-box').appendChild(ul);
-  document.getElementById('quote-box').setAttribute('data-index', index);
   document.getElementById('loadQuote').setAttribute('onmouseover', 'addHoverColor(this)');
   document.getElementById('loadQuote').setAttribute('onmouseleave', 'removeHoverColor(this)');
+
+  clearInterval(timer);
+  timer = setInterval(printQuote, 21000);
 }
 
 // Create span elements for citations and years
@@ -116,7 +111,6 @@ function pushQuoteObject() {
   for (let item of tags.children) {
     quoteObject.tags.push(item.textContent);
   }
-  quoteObject.index = '5';
   quotes.push(quoteObject);
 }
 
@@ -126,7 +120,7 @@ function randomColor() {
   const randColor2 = String(Math.floor(Math.random() * 255)) + ', ';
   const randColor3 = String(Math.floor(Math.random() * 255)) + ', ';
   document.body.style.backgroundColor = 'rgba(' + randColor1 + randColor2 + randColor3 + '1)';
-  document.getElementById('loadQuote').style.backgroundColor = 'rgba(' + randColor1 + randColor2 + randColor3 + '1)';
+  document.getElementById('loadQuote').style.backgroundColor = 'transparent';
 }
 
 // Remove hover color from button
@@ -141,9 +135,7 @@ function addHoverColor(element) {
 }
 // AFter the page finished loading, calls printQuote function every 21 seconds and set data-index of the current quote's HTML to 5
 window.onload = () => {
-  setInterval(printQuote, 21000);
   pushQuoteObject();
-  document.getElementById('quote-box').setAttribute('data-index', '5');
 };
 
 // ----- Event Listeners ----- //
